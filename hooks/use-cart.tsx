@@ -11,49 +11,42 @@ interface CartStore {
 
 export const useCart = create(
   persist<CartStore>(
-    (set, get) => ({
-      items: [],
-      addItem: (product) => {
-        const currentItems = get().items;
+    (set, get) => {
+      return {
+        items: [],
+        addItem: (product) => {
+          const currentItems = get().items;
 
-        // Verificar si el producto ya está en el carrito
-        const existingItem = currentItems.find((p) => p.id === product.id);
+          // Verificar si el producto ya está en el carrito
+          const existingItem = currentItems.find((p) => p.id === product.id);
 
-        if (existingItem) {
-          setTimeout(() => {
-            toast({
+          if (existingItem) {
+            return toast({
               title: "El producto ya existe en el carrito.",
               variant: "destructive",
             });
-          }, 0);
-          return;
-        }
+          }
 
-        // Añadir el producto al carrito
-        set({ items: [...currentItems, product] });
-        setTimeout(() => {
+          // Añadir el producto al carrito
+          set({ items: [...currentItems, product] });
           toast({
             title: "Producto añadido al carrito 🛍️",
           });
-        }, 0);
-      },
-      removeItem: (id: number) => {
-        set({ items: get().items.filter((item) => item.id !== id) });
-        setTimeout(() => {
+        },
+        removeItem: (id: number) => {
+          set({ items: get().items.filter((item) => item.id !== id) });
           toast({
             title: "Producto eliminado del carrito 🗑️",
           });
-        }, 0);
-      },
-      removeAll: () => {
-        set({ items: [] });
-        setTimeout(() => {
+        },
+        removeAll: () => {
+          set({ items: [] });
           toast({
             title: "Carrito limpiado 🧹",
           });
-        }, 0);
-      },
-    }),
+        },
+      };
+    },
     {
       // Persistencia en localStorage
       name: "cart-storage",
